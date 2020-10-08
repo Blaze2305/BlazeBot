@@ -2,6 +2,7 @@ import discord
 from os import environ
 from discord.ext.commands import Bot
 
+# Dictionary of all letters
 letters = {
 	"A":"\U0001F1E6",
 	"B":"\U0001F1E7",
@@ -31,11 +32,13 @@ letters = {
 	"Z":"\U0001F1FF"
 }
 
+# Filter out of the duplicate chars in the word without messing up the order
 def filter_duplicates(seq):
 	seen = set()
 	seen_add = seen.add
 	return [x for x in seq if not (x in seen or seen_add(x))]
 
+# Create a bot instance
 bot = Bot("&")
 
 @bot.event
@@ -44,26 +47,44 @@ async def on_message(message : discord.Message):
 		print(message.content)
 	await bot.process_commands(message)
 
-
-
 	
 @bot.command(pass_context=True)
-async def wordReact(ctx : discord.ext.commands.Context):
+async def wr(ctx : discord.ext.commands.Context):
+
+	print(ctx.message.content)
+
+	# Gets the message to be reacted to
 	try:
 		quoted = ctx.message.content.split("\n")[1]
 	except IndexError as err:
 		await ctx.channel.send(f"{ctx.message.author.mention} You forgot to quote the message you want to react to")
 		return
+	# Remove the bit that makes the message quoted
+	quoted = quoted.replace("> ","")
+	# Get the word to be reacted
+	try:
+		word = ctx.message.content.split("\n")[2]
+	except Exception as e:
+		await ctx.channel.send("Enter the text to be reacted")
+	word = word.split(" ")
+	# Get the author of the original message
+	author = word.pop(0)
+	# Remove the space and create the word
+	word = "".join(word)
+	word = filter_duplicates(word)
+	# Get all the past 100 messages in the channel
 	async for i in ctx.channel.history(limit=100):
-		quoted = quoted.replace("> ","")
-		if quoted == i.content:
+		# Check if the quoted text is the same and if its from the same user
+		if quoted == i.content and int(author[3:-1]) == i.author.id:
+			# Fetch the message if it matches
 			message = await ctx.channel.fetch_message(i.id)
-			try:
-				word = ctx.message.content.split("\n")[2]
-			except Exception as e:
-				await ctx.channel.send("Enter the text to be reacted")
-			word = filter_duplicates(word)
+			# Clear all previous reactions
+			await message.clear_reactions()
+			# React to the message char by char
 			for char in word:
+				# Add each char as a reaction
 				await message.add_reaction(letters[char.upper()])
-			
+			# exit
+			return
+
 bot.run(environ['REACT_BOT_DISCORD'])

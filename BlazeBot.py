@@ -87,4 +87,4 @@ async def wr(ctx : discord.ext.commands.Context):
 			# exit
 			return
 
-bot.run(environ['REACT_BOT_DISCORD'])
+bot.run(environ['BLAZE_BOT'])

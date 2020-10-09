@@ -1,6 +1,8 @@
 import discord
+from twss import TWSS
 from os import environ
 from discord.ext.commands import Bot
+
 
 # Dictionary of all letters
 letters = {
@@ -40,18 +42,27 @@ def filter_duplicates(seq):
 
 # Create a bot instance
 bot = Bot("&")
+client = discord.Client()
+
+@bot.event 
+async def on_ready(): 
+	global twssBot
+	twssBot = TWSS()
+	print('We have logged in.')
+
 
 @bot.event
 async def on_message(message : discord.Message):
 	if message.content[0]!="&":
-		print(message.content)
-	await bot.process_commands(message)
+		print(twssBot(message.content),message.content)
+		if twssBot(message.content) and message.author != bot.user:
+			response = f"> {message.content}\n{message.author.mention} Thats what she said ;D"
+			await message.channel.send(response)
+	else:
+		await bot.process_commands(message)
 
-	
 @bot.command(pass_context=True)
 async def wr(ctx : discord.ext.commands.Context):
-
-	print(ctx.message.content)
 
 	# Gets the message to be reacted to
 	try:

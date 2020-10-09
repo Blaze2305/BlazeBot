@@ -19,7 +19,7 @@ class TWSS:
 	def __call__(self, phrase):
 		if not self.classifier: 
 			self.train()
-		print(self.is_twss(phrase))
+		return(self.is_twss(phrase))
 
 	def import_training_data(self,
 			positive_corpus_file=os.path.join(os.path.dirname(__file__),

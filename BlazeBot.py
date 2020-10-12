@@ -2,7 +2,8 @@ import discord
 from twss import TWSS
 from os import environ
 from discord.ext.commands import Bot
-
+from re import compile
+from string import punctuation
 
 # Dictionary of all letters
 letters = {
@@ -35,10 +36,16 @@ letters = {
 }
 
 # Filter out of the duplicate chars in the word without messing up the order
-def filter_duplicates(seq):
+def filter_duplicates(seq:str):
 	seen = set()
 	seen_add = seen.add
 	return [x for x in seq if not (x in seen or seen_add(x))]
+
+# Clean the sentence from all punctuation
+def clean_sentence(sentence:str):
+	pattern = compile(f"[{punctuation}]")
+	sentence = pattern.sub("",sentence)
+	return sentence
 
 # Create a bot instance
 bot = Bot("&")
@@ -54,8 +61,8 @@ async def on_ready():
 @bot.event
 async def on_message(message : discord.Message):
 	if message.content[0]!="&":
-		print(twssBot(message.content),message.content)
-		if twssBot(message.content) and message.author != bot.user:
+		sentence = clean_sentence(message.content)
+		if twssBot(sentence) and message.author != bot.user:
 			response = f"> {message.content}\n{message.author.mention} Thats what she said ;D"
 			await message.channel.send(response)
 	else:

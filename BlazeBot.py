@@ -8,7 +8,6 @@ from discord import DeletedReferencedMessage
 from re import compile
 from string import punctuation
 from random import random
-import asyncio
 
 TWSS_CHANCE = 1/int(environ.get("TWSS_CHANCE","10"))
 

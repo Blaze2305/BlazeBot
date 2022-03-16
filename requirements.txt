@@ -1,3 +1,4 @@
 discord.py
 PyYAML
 nltk
+pytest-dotenv

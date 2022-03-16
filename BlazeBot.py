@@ -8,6 +8,8 @@ from discord import DeletedReferencedMessage
 from re import compile
 from string import punctuation
 from random import random
+from dotenv import load_dotenv
+
 
 TWSS_CHANCE = 1/int(environ.get("TWSS_CHANCE","10"))
 
@@ -147,5 +149,6 @@ def install_nlkt_packages():
 
 
 if __name__ == "__main__":
+	load_dotenv()
 	install_nlkt_packages()
 	bot.run(environ['BLAZE_BOT_TOKEN'])

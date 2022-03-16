@@ -133,8 +133,6 @@ async def wr(ctx : discord.ext.commands.Context):
 	# get the list of emojis that can be used to form the message
 	emoji_list = get_reaction_message(word)
 
-	print(emoji_list)
-
 	# React to the message emoji by emoji
 	for emoji in emoji_list:
 		# Add each emoji as a reaction
